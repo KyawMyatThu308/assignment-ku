@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Unit Converter</title>
+</head>
+<body>
+  <h2>Unit Converter</h2>
+
+  <label>Category:</label>
+  <select id="category" onchange="setUnits()">
+    <option value="length">Length</option>
+    <option value="temperature">Temperature</option>
+    <option value="area">Area</option>
+  </select>
+  <br><br>
+
+  <label>Value:</label>
+  <input type="number" id="value"><br><br>
+
+  <label>From:</label>
+  <select id="fromUnit"></select>
+
+  <label>To:</label>
+  <select id="toUnit"></select>
+  <br><br>
+
+  <button onclick="convert()">Convert</button>
+  <button onclick="clearAll()">Clear</button>
+
+  <p id="result"></p>
+
+  <script>
+    // Units for each category
+    var units = {
+      length: ["meter", "kilometer", "centimeter", "millimeter", "mile", "yard", "foot", "inch"],
+      temperature: ["celsius", "fahrenheit", "kelvin"],
+      area: ["square meter", "square kilometer", "square centimeter", "square millimeter", "hectare", "acre", "square mile", "square yard", "square foot", "square inch"]
+    };
+
+    // Set default units when category changes
+    function setUnits() {
+      var category = document.getElementById("category").value;
+      var from = document.getElementById("fromUnit");
+      var to = document.getElementById("toUnit");
+
+      from.innerHTML = "";
+      to.innerHTML = "";
+
+      for (var i = 0; i < units[category].length; i++) {
+        var opt1 = document.createElement("option");
+        var opt2 = document.createElement("option");
+        opt1.value = opt1.text = units[category][i];
+        opt2.value = opt2.text = units[category][i];
+        from.add(opt1);
+        to.add(opt2);
+      }
+    }
+
+    // Conversion function
+    function convert() {
+      var value = parseFloat(document.getElementById("value").value);
+      var from = document.getElementById("fromUnit").value;
+      var to = document.getElementById("toUnit").value;
+      var category = document.getElementById("category").value;
+      var result = 0;
+
+      if (isNaN(value)) {
+        document.getElementById("result").innerHTML = "⚠️ Please enter a number.";
+        return;
+      }
+
+      if (category == "length") {
+        result = convertLength(value, from, to);
+      } else if (category == "temperature") {
+        result = convertTemperature(value, from, to);
+      } else if (category == "area") {
+        result = convertArea(value, from, to);
+      }
+
+      document.getElementById("result").innerHTML = value + " " + from + " = " + result + " " + to;
+    }
+
+    // Length conversion
+    function convertLength(value, from, to) {
+      var toMeter = {
+        meter: 1,
+        kilometer: 1000,
+        centimeter: 0.01,
+        millimeter: 0.001,
+        mile: 1609.34,
+        yard: 0.9144,
+        foot: 0.3048,
+        inch: 0.0254
+      };
+      return (value * toMeter[from] / toMeter[to]).toFixed(4);
+    }
+
+    // Temperature conversion
+    function convertTemperature(value, from, to) {
+      var celsius;
+      if (from == "celsius") celsius = value;
+      if (from == "fahrenheit") celsius = (value - 32) * 5 / 9;
+      if (from == "kelvin") celsius = value - 273.15;
+
+      var result;
+      if (to == "celsius") result = celsius;
+      if (to == "fahrenheit") result = (celsius * 9 / 5) + 32;
+      if (to == "kelvin") result = celsius + 273.15;
+
+      return result.toFixed(2);
+    }
+
+    // Area conversion
+    function convertArea(value, from, to) {
+      var toSqMeter = {
+        "square meter": 1,
+        "square kilometer": 1000000,
+        "square centimeter": 0.0001,
+        "square millimeter": 0.000001,
+        "hectare": 10000,
+        "acre": 4046.86,
+        "square mile": 2590000,
+        "square yard": 0.836127,
+        "square foot": 0.092903,
+        "square inch": 0.00064516
+      };
+      return (value * toSqMeter[from] / toSqMeter[to]).toFixed(4);
+    }
+
+    // Clear inputs
+    function clearAll() {
+      document.getElementById("value").value = "";
+      document.getElementById("result").innerHTML = "";
+    }
+
+    // Load default units at start
+    setUnits();
+  </script>
+</body>
+</html>

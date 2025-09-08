@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Change Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+    }
+    h2 {
+      color: #333;
+    }
+    input, button {
+      padding: 8px;
+      margin: 5px 0;
+    }
+    #result {
+      margin-top: 15px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <h2>Change Calculator (Baht)</h2>
+  <label>Bill Amount: </label>
+  <input type="number" id="bill" placeholder="Enter bill amount"><br>
+  
+  <label>Paid Amount: </label>
+  <input type="number" id="paid" placeholder="Enter paid amount"><br>
+  
+  <button onclick="calculateChange()">Calculate</button>
+  <button onclick="clearFields()">Clear</button>
+
+  <div id="result"></div>
+
+  <script>
+    function calculateChange() {
+      let bill = parseInt(document.getElementById("bill").value);
+      let paid = parseInt(document.getElementById("paid").value);
+      let resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = "";
+
+      if (isNaN(bill) || isNaN(paid)) {
+        resultDiv.innerHTML = "⚠️ Please enter valid numbers.";
+        return;
+      }
+
+      if (paid < bill) {
+        resultDiv.innerHTML = "❌ Paid amount is less than bill.";
+        return;
+      }
+
+      let change = paid - bill;
+      let denominations = [1000, 500, 100, 50, 20, 10, 5, 1];
+      let output = `<p>Total Change: <b>${change} Baht</b></p>`;
+
+      denominations.forEach(denom => {
+        let count = Math.floor(change / denom);
+        if (count > 0) {
+          output += `${denom}฿ x ${count}<br>`;
+          change %= denom;
+        }
+      });
+
+      resultDiv.innerHTML = output;
+    }
+
+    function clearFields() {
+      document.getElementById("bill").value = "";
+      document.getElementById("paid").value = "";
+      document.getElementById("result").innerHTML = "";
+    }
+  </script>
+</body>
+</html>
