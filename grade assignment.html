@@ -1,21 +1,126 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Grade Assignment</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ff9a3c, #ff6a00);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      width: 350px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #ff6a00;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin: 10px 0 5px;
+      color: #444;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #ffa64d;
+      border-radius: 8px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      border-color: #ff6a00;
+      box-shadow: 0 0 6px rgba(255,106,0,0.5);
+    }
+
+    button {
+      width: 48%;
+      padding: 10px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    .btn-submit {
+      background: #ff6a00;
+      color: #fff;
+    }
+
+    .btn-clear {
+      background: #ffc266;
+      color: #333;
+    }
+
+    .btn-back {
+      background: transparent;
+      color: #ff6a00;
+      margin-top: 15px;
+      width: 100%;
+      border: 2px solid #ff6a00;
+    }
+
+    .btn-back:hover {
+      background: #ff6a00;
+      color: white;
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      background: #fff5eb;
+      border: 1px solid #ffcc99;
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
 </head>
 <body>
-  <h2>Grade Assignment</h2>
+  <div class="container">
+    <h2>Grade Assignment</h2>
 
-  <label>Enter Score:</label>
-  <input type="number" id="score">
-  <button onclick="checkGrade()">Submit</button>
-  <button onclick="clearAll()">Clear</button>
+    <label>Enter Score:</label>
+    <input type="number" id="score" placeholder="Enter your score">
 
-  <p id="result"></p>
+    <div style="display: flex; justify-content: space-between;">
+      <button class="btn-submit" onclick="checkGrade()">Submit</button>
+      <button class="btn-clear" onclick="clearAll()">Clear</button>
+    </div>
+
+    <p id="result"></p>
+
+    <button class="btn-back" onclick="window.location.href='index.html'">BACK</button>
+  </div>
 
   <script>
     function checkGrade() {
-      var score = document.getElementById("score").value;
+      var score = parseInt(document.getElementById("score").value);
       var grade;
 
       if (score >= 90 && score <= 100) {
@@ -26,7 +131,7 @@
         grade = "C";
       } else if (score >= 60 && score <= 69) {
         grade = "D";
-      } else if (score < 60) {
+      } else if (score < 60 && score >= 0) {
         grade = "F";
       } else {
         grade = "Invalid Score";
