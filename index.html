@@ -2,254 +2,58 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>All-in-One Tools</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Index Page</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      text-align: center;
       margin: 0;
       padding: 0;
-      background: #f3f4f6;
     }
     header {
-      background: #4f46e5;
+      background-color: #4CAF50;
       color: white;
-      text-align: center;
       padding: 20px;
     }
-    h2 {
-      margin-bottom: 10px;
+    nav {
+      margin: 20px 0;
     }
-    .tabs {
-      display: flex;
-      justify-content: center;
-      background: #e0e7ff;
-    }
-    .tab {
-      padding: 12px 20px;
-      cursor: pointer;
-      font-weight: bold;
-      color: #333;
-    }
-    .tab.active {
-      background: #4f46e5;
+    nav a {
+      text-decoration: none;
       color: white;
-      border-radius: 6px 6px 0 0;
+      background-color: #333;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 5px;
+      display: inline-block;
     }
-    .content {
-      display: none;
+    nav a:hover {
+      background-color: #4CAF50;
+    }
+    main {
       padding: 20px;
-      background: white;
-      max-width: 600px;
-      margin: 20px auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    .content.active {
-      display: block;
-    }
-    input, select, button {
-      padding: 8px;
-      margin: 5px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      background: #4f46e5;
-      color: white;
-      border: none;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    button:hover {
-      background: #4338ca;
-    }
-    #result, #changeResult, #gradeResult {
-      margin-top: 15px;
-      padding: 10px;
-      border: 1px solid #ddd;
-      background: #f9fafb;
-      border-radius: 5px;
     }
   </style>
 </head>
 <body>
+
   <header>
-    <h1>All-in-One Tools</h1>
-    <p>Change Calculator • Unit Converter • Grade Assignment</p>
+    <h1>Welcome to My Page</h1>
   </header>
 
-  <div class="tabs">
-    <div class="tab active" onclick="openTab('change')">Change Calculator</div>
-    <div class="tab" onclick="openTab('converter')">Unit Converter</div>
-    <div class="tab" onclick="openTab('grade')">Grade Assignment</div>
-  </div>
+  <nav>
+    <a href="Hobby.html">Hobby</a>
+    <a href="Resume.html">Resume</a>
+    <a href="calculatechange.html">Calculate the Change</a>
+    <a href="grade assignment.html">Grade Assignment</a>
+    <a href="unitconverter.html">Unit Converter</a>
+  </nav>
 
-  <!-- Change Calculator -->
-  <div id="change" class="content active">
-    <h2>Change Calculator (Baht)</h2>
-    <label>Bill Amount: </label>
-    <input type="number" id="bill"><br>
-    <label>Paid Amount: </label>
-    <input type="number" id="paid"><br>
-    <button onclick="calculateChange()">Calculate</button>
-    <button onclick="clearChange()">Clear</button>
-    <div id="changeResult"></div>
-  </div>
+  <main>
+    <h2>Select a tab above to go to the page</h2>
+  </main>
 
-  <!-- Unit Converter -->
-  <div id="converter" class="content">
-    <h2>Unit Converter</h2>
-    <label>Category: </label>
-    <select id="category" onchange="setUnits()">
-      <option value="length">Length</option>
-      <option value="temperature">Temperature</option>
-      <option value="area">Area</option>
-    </select><br>
-    <label>Value: </label>
-    <input type="number" id="value"><br>
-    <label>From: </label>
-    <select id="fromUnit"></select>
-    <label>To: </label>
-    <select id="toUnit"></select><br>
-    <button onclick="convert()">Convert</button>
-    <button onclick="clearConvert()">Clear</button>
-    <div id="result"></div>
-  </div>
-
-  <!-- Grade Assignment -->
-  <div id="grade" class="content">
-    <h2>Grade Assignment</h2>
-    <label>Enter Score: </label>
-    <input type="number" id="score"><br>
-    <button onclick="checkGrade()">Submit</button>
-    <button onclick="clearGrade()">Clear</button>
-    <div id="gradeResult"></div>
-  </div>
-
-  <script>
-    // ----- Tabs -----
-    function openTab(tabId) {
-      var tabs = document.getElementsByClassName("tab");
-      var contents = document.getElementsByClassName("content");
-      for (var i = 0; i < tabs.length; i++) {
-        tabs[i].classList.remove("active");
-        contents[i].classList.remove("active");
-      }
-      document.querySelector(".tab[onclick=\"openTab('" + tabId + "')\"]").classList.add("active");
-      document.getElementById(tabId).classList.add("active");
-    }
-
-    // ----- Change Calculator -----
-    function calculateChange() {
-      var bill = parseInt(document.getElementById("bill").value);
-      var paid = parseInt(document.getElementById("paid").value);
-      var resultDiv = document.getElementById("changeResult");
-      resultDiv.innerHTML = "";
-
-      if (isNaN(bill) || isNaN(paid)) {
-        resultDiv.innerHTML = "⚠️ Please enter valid numbers.";
-        return;
-      }
-      if (paid < bill) {
-        resultDiv.innerHTML = "❌ Paid amount is less than bill.";
-        return;
-      }
-
-      var change = paid - bill;
-      var denominations = [1000, 500, 100, 50, 20, 10, 5, 1];
-      var output = "<p>Total Change: <b>" + change + " Baht</b></p>";
-
-      for (var i = 0; i < denominations.length; i++) {
-        var denom = denominations[i];
-        var count = Math.floor(change / denom);
-        if (count > 0) {
-          output += denom + "฿ x " + count + "<br>";
-          change = change % denom;
-        }
-      }
-      resultDiv.innerHTML = output;
-    }
-    function clearChange() {
-      document.getElementById("bill").value = "";
-      document.getElementById("paid").value = "";
-      document.getElementById("changeResult").innerHTML = "";
-    }
-
-    // ----- Unit Converter -----
-    var units = {
-      length: ["meter", "kilometer", "centimeter", "millimeter", "mile", "yard", "foot", "inch"],
-      temperature: ["celsius", "fahrenheit", "kelvin"],
-      area: ["square meter", "square kilometer", "square centimeter", "square millimeter", "hectare", "acre", "square mile", "square yard", "square foot", "square inch"]
-    };
-    function setUnits() {
-      var category = document.getElementById("category").value;
-      var from = document.getElementById("fromUnit");
-      var to = document.getElementById("toUnit");
-      from.innerHTML = "";
-      to.innerHTML = "";
-      for (var i = 0; i < units[category].length; i++) {
-        var u = units[category][i];
-        from.innerHTML += "<option>" + u + "</option>";
-        to.innerHTML += "<option>" + u + "</option>";
-      }
-    }
-    function convert() {
-      var value = parseFloat(document.getElementById("value").value);
-      var from = document.getElementById("fromUnit").value;
-      var to = document.getElementById("toUnit").value;
-      var category = document.getElementById("category").value;
-      var resultDiv = document.getElementById("result");
-      if (isNaN(value)) {
-        resultDiv.innerHTML = "⚠️ Please enter a value.";
-        return;
-      }
-      var result = 0;
-      if (category == "length") result = convertLength(value, from, to);
-      if (category == "temperature") result = convertTemperature(value, from, to);
-      if (category == "area") result = convertArea(value, from, to);
-      resultDiv.innerHTML = value + " " + from + " = <b>" + result + " " + to + "</b>";
-    }
-    function convertLength(value, from, to) {
-      var toMeter = {meter:1, kilometer:1000, centimeter:0.01, millimeter:0.001, mile:1609.34, yard:0.9144, foot:0.3048, inch:0.0254};
-      return (value * toMeter[from] / toMeter[to]).toFixed(4);
-    }
-    function convertTemperature(value, from, to) {
-      var celsius;
-      if (from=="celsius") celsius=value;
-      if (from=="fahrenheit") celsius=(value-32)*5/9;
-      if (from=="kelvin") celsius=value-273.15;
-      var result;
-      if (to=="celsius") result=celsius;
-      if (to=="fahrenheit") result=(celsius*9/5)+32;
-      if (to=="kelvin") result=celsius+273.15;
-      return result.toFixed(2);
-    }
-    function convertArea(value, from, to) {
-      var toSqMeter = {"square meter":1,"square kilometer":1e6,"square centimeter":0.0001,"square millimeter":0.000001,"hectare":10000,"acre":4046.86,"square mile":2590000,"square yard":0.836127,"square foot":0.092903,"square inch":0.00064516};
-      return (value * toSqMeter[from] / toSqMeter[to]).toFixed(4);
-    }
-    function clearConvert() {
-      document.getElementById("value").value = "";
-      document.getElementById("result").innerHTML = "";
-    }
-    setUnits();
-
-    // ----- Grade Assignment -----
-    function checkGrade() {
-      var score = document.getElementById("score").value;
-      var grade;
-      if (score >= 90 && score <= 100) grade = "A";
-      else if (score >= 80 && score <= 89) grade = "B";
-      else if (score >= 70 && score <= 79) grade = "C";
-      else if (score >= 60 && score <= 69) grade = "D";
-      else if (score < 60) grade = "F";
-      else grade = "Invalid";
-      document.getElementById("gradeResult").innerHTML = "Grade: <b>" + grade + "</b>";
-    }
-    function clearGrade() {
-      document.getElementById("score").value = "";
-      document.getElementById("gradeResult").innerHTML = "";
-    }
-  </script>
 </body>
 </html>
