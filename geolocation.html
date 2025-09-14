@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Geo Location — Kasem Bundit University (Romklao)</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #fff8f3;
+      color: #222;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #ff6f00;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.6rem;
+    }
+    main {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 720px;
+      width: 100%;
+      margin: 15px 0;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+    }
+    h3 {
+      color: #ff6f00;
+      margin-bottom: 10px;
+    }
+    .coords {
+      font-family: monospace;
+      font-size: 0.95rem;
+      color: #333;
+    }
+    button {
+      padding: 12px 18px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      margin: 6px;
+      transition: background 0.3s;
+    }
+    .primary {
+      background: #ff6f00;
+      color: white;
+    }
+    .primary:hover {
+      background: #e65c00;
+    }
+    .secondary {
+      background: #ffe0c2;
+      color: #222;
+    }
+    .secondary:hover {
+      background: #ffcc99;
+    }
+    .error {
+      color: crimson;
+      font-weight: bold;
+    }
+    footer {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 0.85rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📍 Your Location → Kasem Bundit University (Romklao)</h1>
+  </header>
+
+  <main>
+    <div class="card" id="statusCard">
+      <h3>Status</h3>
+      <p id="status">Click "Get my location" to start.</p>
+
+      <div>
+        <button id="getBtn" class="primary">Get My Location</button>
+        <button id="directionsBtn" class="primary" style="display:none">Open Directions in Google Maps</button>
+        <button id="backBtn" class="secondary" onclick="location.href='index.html'">BACK</button>
+      </div>
+    </div>
+
+    <div class="card" id="infoCard" style="display:none">
+      <h3>Your Coordinates</h3>
+      <p class="coords" id="userCoords">lat: — , lng: —</p>
+
+      <h3>Kasem Bundit University (Romklao campus)</h3>
+      <p class="coords" id="kbuCoords">lat: 13.7809, lng: 100.7541</p>
+
+      <h3>Distance</h3>
+      <p id="distanceText">—</p>
+    </div>
+  </main>
+
+  <footer>
+    <small>Kasem Bundit University — Romklao campus coordinates used.</small>
+  </footer>
+
+  <script>
+    // Kasem Bundit University (Romklao campus) coordinates.
+    const KBU = { lat: 13.7809, lng: 100.7541 };
+
+    const getBtn = document.getElementById('getBtn');
+    const directionsBtn = document.getElementById('directionsBtn');
+    const statusEl = document.getElementById('status');
+    const userCoordsEl = document.getElementById('userCoords');
+    const kbuCoordsEl = document.getElementById('kbuCoords');
+    const distanceText = document.getElementById('distanceText');
+    const infoCard = document.getElementById('infoCard');
+
+    // Haversine formula (km)
+    function haversineDistance(lat1, lon1, lat2, lon2) {
+      const toRad = deg => deg * Math.PI / 180;
+      const R = 6371;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat/2) ** 2 +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLon/2) ** 2;
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    function updateUIWithPosition(position) {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      statusEl.textContent = '✅ Location found!';
+      userCoordsEl.textContent = `lat: ${lat.toFixed(6)}, lng: ${lng.toFixed(6)}`;
+      kbuCoordsEl.textContent = `lat: ${KBU.lat}, lng: ${KBU.lng}`;
+      const dKm = haversineDistance(lat, lng, KBU.lat, KBU.lng);
+      distanceText.textContent = `${dKm.toFixed(2)} km (straight-line)`;
+
+      infoCard.style.display = 'block';
+      directionsBtn.style.display = 'inline-block';
+
+      const gmapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${lat},${lng}&destination=Kasem+Bundit+University+Romklao&travelmode=driving`;
+      directionsBtn.onclick = () => window.open(gmapsUrl, '_blank');
+    }
+
+    function handleError(err) {
+      console.error(err);
+      if (err.code === 1) statusEl.innerHTML = '<span class="error">❌ Permission denied.</span>';
+      else if (err.code === 2) statusEl.innerHTML = '<span class="error">❌ Position unavailable.</span>';
+      else if (err.code === 3) statusEl.innerHTML = '<span class="error">❌ Timeout getting location.</span>';
+      else statusEl.innerHTML = '<span class="error">❌ Error getting location.</span>';
+    }
+
+    getBtn.addEventListener('click', () => {
+      if (!navigator.geolocation) {
+        statusEl.innerHTML = '<span class="error">Geolocation not supported.</span>';
+        return;
+      }
+      statusEl.textContent = '🔍 Requesting location...';
+      navigator.geolocation.getCurrentPosition(updateUIWithPosition, handleError, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
+    });
+  </script>
+</body>
+</html>
