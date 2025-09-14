@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Change Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ff9a3c, #ff6a00);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      width: 400px;
+      max-width: 90%;
+      text-align: center;
+    }
+
+    h2 {
+      color: #ff6a00;
+      margin-bottom: 25px;
+      font-size: 1.8em;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin: 12px 0 5px;
+      color: #444;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #ffa64d;
+      border-radius: 10px;
+      outline: none;
+      font-size: 1.1em;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      border-color: #ff6a00;
+      box-shadow: 0 0 8px rgba(255,106,0,0.5);
+    }
+
+    button {
+      width: 48%;
+      padding: 14px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.1em;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    .btn-calc {
+      background: #ff6a00;
+      color: #fff;
+    }
+
+    .btn-clear {
+      background: #ffc266;
+      color: #333;
+    }
+
+    .btn-back {
+      background: transparent;
+      color: #ff6a00;
+      margin-top: 20px;
+      width: 100%;
+      border: 2px solid #ff6a00;
+      padding: 12px;
+      font-size: 1.1em;
+      border-radius: 10px;
+    }
+
+    .btn-back:hover {
+      background: #ff6a00;
+      color: #fff;
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 12px;
+      background: #fff5eb;
+      border: 1px solid #ffcc99;
+      text-align: left;
+      font-size: 1.1em;
+    }
+
+    /* Mobile adjustments */
+    @media screen and (max-width: 480px) {
+      h2 { font-size: 1.6em; }
+      input, button, .btn-back { font-size: 1.05em; padding: 12px; }
+      .container { padding: 25px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Change Calculator (Baht)</h2>
+
+    <label>Bill Amount:</label>
+    <input type="number" id="bill" placeholder="Enter bill amount">
+
+    <label>Paid Amount:</label>
+    <input type="number" id="paid" placeholder="Enter paid amount">
+
+    <div style="display: flex; justify-content: space-between;">
+      <button class="btn-calc" onclick="calculateChange()">Calculate</button>
+      <button class="btn-clear" onclick="clearFields()">Clear</button>
+    </div>
+
+    <div id="result"></div>
+
+    <button class="btn-back" onclick="window.location.href='index.html'">BACK</button>
+  </div>
+
+  <script>
+    function calculateChange() {
+      let bill = parseInt(document.getElementById("bill").value);
+      let paid = parseInt(document.getElementById("paid").value);
+      let resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = "";
+
+      if (isNaN(bill) || isNaN(paid)) {
+        resultDiv.innerHTML = "⚠️ Please enter valid numbers.";
+        return;
+      }
+
+      if (paid < bill) {
+        resultDiv.innerHTML = "❌ Paid amount is less than bill.";
+        return;
+      }
+
+      let change = paid - bill;
+      let denominations = [1000, 500, 100, 50, 20, 10, 5, 1];
+      let output = `<p>Total Change: <b>${change} Baht</b></p>`;
+
+      denominations.forEach(denom => {
+        let count = Math.floor(change / denom);
+        if (count > 0) {
+          output += `${denom}฿ x ${count}<br>`;
+          change %= denom;
+        }
+      });
+
+      resultDiv.innerHTML = output;
+    }
+
+    function clearFields() {
+      document.getElementById("bill").value = "";
+      document.getElementById("paid").value = "";
+      document.getElementById("result").innerHTML = "";
+    }
+  </script>
+</body>
+</html>
