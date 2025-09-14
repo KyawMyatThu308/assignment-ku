@@ -1,43 +1,148 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Simple Unit Converter</title>
+  <meta charset="UTF-8">
+  <title>Unit Converter</title>
+  <style>
+    /* General body styling */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ff9a3c, #ff6a00);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      color: #fff;
+      transition: background 0.5s ease;
+    }
+
+    /* Container */
+    .converter-container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      text-align: center;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 2em;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    select, input[type="number"] {
+      padding: 10px;
+      margin: 5px 0 15px 0;
+      border-radius: 10px;
+      border: none;
+      width: 200px;
+      text-align: center;
+      font-size: 1em;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    select:hover, input[type="number"]:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+    }
+
+    button {
+      background-color: #ff7f00;
+      border: none;
+      padding: 12px 25px;
+      margin: 10px 5px;
+      border-radius: 10px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #ff9500;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+      min-height: 1.5em;
+      transition: all 0.3s ease;
+    }
+
+    /* Back button */
+    .back-btn {
+      display: inline-block;
+      margin-top: 20px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      background-color: #ff4500;
+      padding: 10px 20px;
+      border-radius: 10px;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .back-btn:hover {
+      background-color: #ff6347;
+      transform: scale(1.05);
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(-20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+  </style>
 </head>
 <body>
-  <h2>Unit Converter</h2>
 
-  <label>Category:</label>
-  <select id="category" onchange="setUnits()">
-    <option value="length">Length</option>
-    <option value="temperature">Temperature</option>
-    <option value="area">Area</option>
-  </select>
-  <br><br>
+  <div class="converter-container">
+    <h2>Unit Converter</h2>
 
-  <label>Value:</label>
-  <input type="number" id="value"><br><br>
+    <label>Category:</label>
+    <select id="category" onchange="setUnits()">
+      <option value="length">Length</option>
+      <option value="temperature">Temperature</option>
+      <option value="area">Area</option>
+    </select>
+    <br><br>
 
-  <label>From:</label>
-  <select id="fromUnit"></select>
+    <label>Value:</label>
+    <input type="number" id="value"><br><br>
 
-  <label>To:</label>
-  <select id="toUnit"></select>
-  <br><br>
+    <label>From:</label>
+    <select id="fromUnit"></select>
 
-  <button onclick="convert()">Convert</button>
-  <button onclick="clearAll()">Clear</button>
+    <label>To:</label>
+    <select id="toUnit"></select>
+    <br><br>
 
-  <p id="result"></p>
+    <button onclick="convert()">Convert</button>
+    <button onclick="clearAll()">Clear</button>
+
+    <p id="result"></p>
+
+    <a class="back-btn" href="index.html">BACK</a>
+  </div>
 
   <script>
-    // Units for each category
     var units = {
       length: ["meter", "kilometer", "centimeter", "millimeter", "mile", "yard", "foot", "inch"],
       temperature: ["celsius", "fahrenheit", "kelvin"],
       area: ["square meter", "square kilometer", "square centimeter", "square millimeter", "hectare", "acre", "square mile", "square yard", "square foot", "square inch"]
     };
 
-    // Set default units when category changes
     function setUnits() {
       var category = document.getElementById("category").value;
       var from = document.getElementById("fromUnit");
@@ -56,7 +161,6 @@
       }
     }
 
-    // Conversion function
     function convert() {
       var value = parseFloat(document.getElementById("value").value);
       var from = document.getElementById("fromUnit").value;
@@ -69,33 +173,21 @@
         return;
       }
 
-      if (category == "length") {
-        result = convertLength(value, from, to);
-      } else if (category == "temperature") {
-        result = convertTemperature(value, from, to);
-      } else if (category == "area") {
-        result = convertArea(value, from, to);
-      }
+      if (category == "length") result = convertLength(value, from, to);
+      else if (category == "temperature") result = convertTemperature(value, from, to);
+      else if (category == "area") result = convertArea(value, from, to);
 
       document.getElementById("result").innerHTML = value + " " + from + " = " + result + " " + to;
     }
 
-    // Length conversion
     function convertLength(value, from, to) {
       var toMeter = {
-        meter: 1,
-        kilometer: 1000,
-        centimeter: 0.01,
-        millimeter: 0.001,
-        mile: 1609.34,
-        yard: 0.9144,
-        foot: 0.3048,
-        inch: 0.0254
+        meter: 1, kilometer: 1000, centimeter: 0.01, millimeter: 0.001,
+        mile: 1609.34, yard: 0.9144, foot: 0.3048, inch: 0.0254
       };
       return (value * toMeter[from] / toMeter[to]).toFixed(4);
     }
 
-    // Temperature conversion
     function convertTemperature(value, from, to) {
       var celsius;
       if (from == "celsius") celsius = value;
@@ -110,7 +202,6 @@
       return result.toFixed(2);
     }
 
-    // Area conversion
     function convertArea(value, from, to) {
       var toSqMeter = {
         "square meter": 1,
@@ -127,13 +218,11 @@
       return (value * toSqMeter[from] / toSqMeter[to]).toFixed(4);
     }
 
-    // Clear inputs
     function clearAll() {
       document.getElementById("value").value = "";
       document.getElementById("result").innerHTML = "";
     }
 
-    // Load default units at start
     setUnits();
   </script>
 </body>
